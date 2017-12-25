@@ -1,4 +1,4 @@
-package com.strive.mybatis.caches.redis;
+package com.strive.cache.redis;
 
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheException;
@@ -25,9 +25,8 @@ public final class RedisCache implements Cache {
         this.id = id;
         RedisConfig redisConfig = RedisConfigurationBuilder.getInstance().parseConfiguration();
         pool = new JedisPool(redisConfig, redisConfig.getHost(), redisConfig.getPort(),
-                redisConfig.getConnectionTimeout(), redisConfig.getSoTimeout(), redisConfig.getPassword(),
-                redisConfig.getDatabase(), redisConfig.getClientName(), redisConfig.isSsl(),
-                redisConfig.getSslSocketFactory(), redisConfig.getSslParameters(), redisConfig.getHostnameVerifier());
+                redisConfig.getConnectionTimeout(), redisConfig.getPassword(),
+                redisConfig.getDatabase());
     }
 
     private Object execute(RedisCallback callback) {

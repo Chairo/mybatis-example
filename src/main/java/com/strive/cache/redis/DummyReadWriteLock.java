@@ -1,4 +1,4 @@
-package com.strive.mybatis.caches.redis;
+package com.strive.cache.redis;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;

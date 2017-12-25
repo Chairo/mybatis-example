@@ -1,4 +1,4 @@
-package com.strive.mybatis.caches.redis;
+package com.strive.cache.redis;
 
 import redis.clients.jedis.Jedis;
 
