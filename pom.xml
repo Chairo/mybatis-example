@@ -14,6 +14,7 @@
         <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
 
         <hazelcast.version>3.8.6</hazelcast.version>
+        <ignite.version>2.1.0</ignite.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,16 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>${ignite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-spring</artifactId>
+            <version>${ignite.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
@@ -68,6 +79,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-log4j</artifactId>
+            <version>${ignite.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

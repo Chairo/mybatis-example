@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        <!-- 设置为true以便启用分布式类加载，默认为false -->
+        <property name="peerClassLoadingEnabled" value="true"/>
+    </bean>
+
+    <bean id="templateCacheCfg" class="org.apache.ignite.configuration.CacheConfiguration">
+        <!-- 设置缓存名称 -->
+        <property name="name" value="myBatisCache"/>
+        <!-- 在默认情况下将缓存模式设置为本地模式 -->
+        <property name="cacheMode" value="LOCAL"/>
+    </bean>
+</beans>
