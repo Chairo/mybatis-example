@@ -14,7 +14,16 @@ import java.util.concurrent.locks.ReadWriteLock;
 public final class RedisCache implements Cache {
 
     private final ReadWriteLock readWriteLock = new DummyReadWriteLock();
+
+    /**
+     * mapper namespace
+     */
     private String id;
+
+    /**
+     * 失效时间，单位秒，默认30分钟
+     */
+    private int expireSeconds = 1800;
     private static JedisPool pool;
 
     public RedisCache(final String id) {
@@ -52,6 +61,7 @@ public final class RedisCache implements Cache {
     public void putObject(final Object key, final Object value) {
         this.execute(jedis -> {
             jedis.hset(id.getBytes(), key.toString().getBytes(), SerializeUtil.serialize(value));
+            jedis.expire(id.getBytes(), expireSeconds);
             return null;
         });
     }
@@ -81,7 +91,7 @@ public final class RedisCache implements Cache {
 
     @Override
     public String toString() {
-        return "Redis {" + id + "}";
+        return "Redis cache id:{" + id + "}, expire time:{" + expireSeconds + "} seconds";
     }
 
     @Override
@@ -109,5 +119,13 @@ public final class RedisCache implements Cache {
         }
 
         return getId().hashCode();
+    }
+
+    public int getExpireSeconds() {
+        return expireSeconds;
+    }
+
+    public void setExpireSeconds(int expireSeconds) {
+        this.expireSeconds = expireSeconds;
     }
 }

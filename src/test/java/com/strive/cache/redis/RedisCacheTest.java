@@ -60,6 +60,7 @@ public final class RedisCacheTest {
 
     @Test
     public void shouldVerifyToString() {
-        assertEquals("Redis {REDIS}", cache.toString());
+        cache.setExpireSeconds(30);
+        assertEquals("Redis cache id:{REDIS}, expire time:{30} seconds", cache.toString());
     }
 }
