@@ -24,6 +24,13 @@ import java.util.Properties;
 
 /**
  * 监控SQL及其执行时间
+ * 这里为什么使用StatementHandler去拦截？根据名字来看ParameterHandler和ResultSetHandler，前者处理参数，后者处理结果是不可能使用的，
+ * 剩下的就是Executor和StatementHandler了。
+ * <p>
+ * 拦截StatementHandler而不是用Executor的原因是：
+ * 1、Executor的update与query方法可能用到MyBatis的一二级缓存从而导致统计的并不是真正的SQL执行时间
+ * 2、StatementHandler的update与query方法无论如何都会统计到PreparedStatement的execute方法执行时间，尽管也有一定误差（误差主要来自
+ * 会将处理结果的时间也算上），但是相差不大
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class}),
         @Signature(type = StatementHandler.class, method = "update", args = {Statement.class}),
@@ -32,6 +39,13 @@ public class SqlCostInterceptor implements Interceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlCostInterceptor.class);
 
+    /**
+     * 拦截器的核心代码，唯一要注意的一点就是无论如何最终一定要返回invocation.proceed()，保证拦截器的层层调用。
+     *
+     * @param invocation
+     * @return
+     * @throws Throwable
+     */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object target = invocation.getTarget();
@@ -55,11 +69,24 @@ public class SqlCostInterceptor implements Interceptor {
         }
     }
 
+    /**
+     * 这里是为目标接口生成代理，不需要自己去写生成代理的方法，MyBatis的Plugin类已经为我们提供了wrap方法（当然如果有自己的逻辑也可以
+     * 在Plugin.wrap方法前后加入，但是最终一定要使用Plugin.wrap方法生成代理）
+     *
+     * @param target 这里的target一定是一个接口，因此可以放心使用JDK本身提供的Proxy类，这里相当于就是如果该接口满足方法签名那么就为之生成一个代理。
+     * @return
+     */
     @Override
     public Object plugin(Object target) {
         return Plugin.wrap(target, this);
     }
 
+    /**
+     * 可以将一些配置属性配置在<plugin></plugin>的子标签<property />中，所有的配置属性会在形参Properties中，setProperties方法可以
+     * 拿到配置的属性进行需要的处理。
+     *
+     * @param properties
+     */
     @Override
     public void setProperties(Properties properties) {
 
